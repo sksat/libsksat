@@ -1,7 +1,8 @@
-#include <cstdio>
 #include <string>
+#include <sksat/common.hpp>
 
-namespace sksat::math {
+namespace sksat {
+namespace math {
 
 class gnuplot {
 public:
@@ -9,29 +10,31 @@ public:
 	gnuplot() : gnuplot(DEFAULT) {}
 	gnuplot(MODE m) : mode(m) {
 		std::string arg("gnuplot");
-		if(PERSIST) arg += " -persist";
-		gp = popen(arg.c_str(), "w");
+		if(mode == PERSIST) arg += " -persist";
+		gp = sksat::popen(arg.c_str(), "w");
 	}
 	~gnuplot(){ pclose(gp); }
 
 	void command(const char *com){
-		fprintf(gp, "%s\n", com);
+		std::fprintf(gp, "%s\n", com);
 	}
 	void command(std::string &com){
 		command(com.c_str());
 	}
 	void set(const char *arg){
-		fprintf(gp, "set %s\n", arg);
+		std::fprintf(gp, "set %s\n", arg);
 	}
 	void set_grid()	{ set("grid"); }
 	void flush()	{ fflush(gp); } 
 	void plot(const char *arg){
-		fprintf(gp, "plot %s\n", arg);
+		std::fprintf(gp, "plot %s\n", arg);
 	}
 	void plot()		{ plot(""); }
+	void quit()		{ command("quit"); }
 private:
 	std::FILE *gp;
 	MODE mode;
 };
 
-};
+}
+}

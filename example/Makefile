@@ -1,8 +1,8 @@
 CXX:= g++
 
-CXXFLAGS = -g -O0 -std=c++11
+CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = vector-test.cc
+SRC = gp_test.cc
 
 default:
 	$(CXX) $(CXXFLAGS) $(SRC) -o a.out

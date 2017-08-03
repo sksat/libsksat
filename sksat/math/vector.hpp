@@ -1,4 +1,5 @@
-namespace sksat::math {
+namespace sksat {
+namespace math {
 
 template<typename T=double>
 class vector {
@@ -86,4 +87,5 @@ inline const vector<T> operator*(const vector<T> v, const T& a){
 	};
 }
 
+}
 }
