@@ -65,7 +65,10 @@ public:
 				if(argv[0][1] == '-'){ // long option
 					opt_num = search_long_opt(argv[0]+2);
 				}else{ // short option
-					opt_num = search_short_opt(argv[0][1]);
+					if(argv[0][1] != '\0'){
+						if(argv[0][2] == '\0')
+							opt_num = search_short_opt(argv[0][1]);
+					}
 				}
 			}
 			if(opt_num > -1){ // option found
