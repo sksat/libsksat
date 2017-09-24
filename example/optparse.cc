@@ -10,5 +10,6 @@ int main(int argc, char **argv){
 	sksat::optparse op;
 	op.add_opt('a', "aaa", "hoge", func);
 	op.add_opt('b', "bbb", "fuga", func);
+	op.add_opt('c', "neko", func);
 	op.parse(argc, argv);
 }

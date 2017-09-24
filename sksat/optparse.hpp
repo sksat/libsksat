@@ -28,9 +28,27 @@ public:
 		add_opt(o);
 	}
 
+	void add_opt(char s_opt, sksat::string desc, opt_func func){
+		option o = {
+			.s_opt = s_opt,
+			.l_opt = "",
+			.desc  = desc,
+			.func  = func
+		};
+		add_opt(o);
+	}
+
 	int search_short_opt(char c){
 		for(int i=0;i<opts.size();i++){
 			if(opts[i].s_opt == c) return i;
+		}
+		return -1;
+	}
+
+	int search_long_opt(sksat::string str){
+		if(str == "") return -1;
+		for(int i=0;i<opts.size();i++){
+			if(opts[i].l_opt == str) return i;
 		}
 		return -1;
 	}
@@ -39,12 +57,13 @@ public:
 		this->argc = argc;
 		this->argv = argv;
 		if(argc == 1) return false;
-//		argv++;
+		argc--;
+		argv++;
 		for(int i=0;i<argc;i++){
 			int opt_num = -1;
 			if(argv[0][0] == '-'){ // option?
 				if(argv[0][1] == '-'){ // long option
-					throw "not implemented";
+					opt_num = search_long_opt(argv[0]+2);
 				}else{ // short option
 					opt_num = search_short_opt(argv[0][1]);
 				}
