@@ -74,7 +74,12 @@ public:
 			}
 
 			if(opt_num < 0){
-				printf("%s: error: unrecognized option \'%s\'\n", this->argv[0], argv[0]);
+				printf("\x1b[1m\x1b[33m");
+				printf("%s: ", this->argv[0]);
+				printf("\x1b[31m");
+				printf("error: ");
+				printf("\x1b[0m");
+				printf("unrecognized option \'%s\'\n", argv[0]);
 				exit(0);
 			}
 
