@@ -66,19 +66,26 @@ public:
 					opt_num = search_long_opt(argv[0]+2);
 				}else{ // short option
 					if(argv[0][1] != '\0'){
-						if(argv[0][2] == '\0')
+						if(argv[0][2] == '\0'){
 							opt_num = search_short_opt(argv[0][1]);
+						}
 					}
 				}
 			}
-			if(opt_num > -1){ // option found
-				opt_func f = opts[opt_num].func;
-				int ret = f(argc-i, argv);
-				i += ret;
-				argv+=ret;
+
+			if(opt_num < 0){
+				printf("%s: error: unrecognized option \'%s\'\n", this->argv[0], argv[0]);
+				exit(0);
 			}
+
+			opt_func f = opts[opt_num].func;
+			int ret = f(argc-i, argv);
+			i += ret;
+			argv+=ret;
+
 			argv++;
 		}
+		return true;
 	}
 
 private:

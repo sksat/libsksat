@@ -11,5 +11,7 @@ int main(int argc, char **argv){
 	op.add_opt('a', "aaa", "hoge", func);
 	op.add_opt('b', "bbb", "fuga", func);
 	op.add_opt('c', "neko", func);
-	op.parse(argc, argv);
+	if(!op.parse(argc, argv)){
+		std::cout<<"failed."<<std::endl;
+	}
 }
