@@ -39,9 +39,14 @@ namespace sksat
 #ifndef NO_STL
 	#include <vector>
 	#include <string>
+	#include <map>
+	#include <functional>
+	#include <sstream>
 	namespace sksat {
 		using std::vector;
 		using std::string;
+		using std::map;
+		using std::stringstream;
 	}
 #endif
 

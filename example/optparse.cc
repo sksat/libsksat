@@ -7,11 +7,20 @@ int func(int argc, char **argv){
 }
 
 int main(int argc, char **argv){
+try{
 	sksat::optparse op;
-	op.add_opt('a', "aaa", "hoge", func);
-	op.add_opt('b', "bbb", "fuga", func);
-	op.add_opt('c', "neko", func);
-	if(!op.parse(argc, argv)){
-		std::cout<<"failed."<<std::endl;
-	}
+	op.add_opt('a', "aaa", "aaaa", func);
+	op.add_opt('b', "bbb", "bbbb", func);
+	std::string neko;
+	op.add_opt(neko, 'n', "neko", "nekonyah");
+	int hoge;
+	op.add_opt(hoge, 'h', "hoge", "hogehoge");
+
+	op.parse(argc, argv);
+
+	std::cout<<"neko:"<<neko<<std::endl;
+	std::cout<<"hoge:"<<hoge<<std::endl;
+}catch(const char *msg){
+	std::cout<<msg<<std::endl;
+}
 }

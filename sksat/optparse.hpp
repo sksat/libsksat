@@ -13,12 +13,29 @@ public:
 
 	optparse() : argc(0), argv(nullptr) {}
 
+	template<typename T>
+	void add_opt(T &arg, optparse::option o){
+		setters[opts.size()] = std::bind(&optparse::setarg<T>, this, std::ref(arg), std::placeholders::_1);
+		opts.push_back(o);
+	}
+
+	template<typename T>
+	void add_opt(T &arg, char s_opt, sksat::string l_opt, sksat::string desc){
+		optparse::option o = {
+			.s_opt = s_opt,
+			.l_opt = l_opt,
+			.desc  = desc,
+			.func  = nullptr
+		};
+		add_opt(arg, o);
+	}
+
 	void add_opt(optparse::option o){
 		opts.push_back(o);
 	}
 
 	void add_opt(char s_opt, sksat::string l_opt, sksat::string desc, opt_func func){
-		option o = {
+		optparse::option o = {
 			.s_opt = s_opt,
 			.l_opt = l_opt,
 			.desc  = desc,
@@ -83,10 +100,19 @@ public:
 				exit(0);
 			}
 
-			opt_func f = opts[opt_num].func;
-			int ret = f(argc-i, argv);
-			i += ret;
-			argv+=ret;
+			auto it = setters.find(opt_num);
+			if(it != setters.end()){
+				if((argc-i)>1){
+					it->second(argv[1]);
+					i++;
+					argv++;
+				}
+			}else{
+				opt_func f = opts[opt_num].func;
+				int ret = f(argc-i, argv);
+				i += ret;
+				argv+=ret;
+			}
 
 			argv++;
 		}
@@ -94,9 +120,23 @@ public:
 	}
 
 private:
+	template<typename T>
+	void setarg(T &var, sksat::string arg){
+		// var = static_cast<T>(arg);
+		sksat::stringstream ss(arg);
+		ss >> var;
+	}
+
 	int argc;
 	char **argv;
 	sksat::vector<option> opts;
+	sksat::map<int, std::function< void(sksat::string arg) >> setters;
 };
+
+// multi word
+template<>
+void optparse::setarg<sksat::string>(sksat::string &var, sksat::string arg){
+	var = arg;
+}
 
 }
