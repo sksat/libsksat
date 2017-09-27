@@ -97,7 +97,8 @@ public:
 				printf("error: ");
 				printf("\x1b[0m");
 				printf("unrecognized option \'%s\'\n", argv[0]);
-				exit(0);
+			//	exit(0);
+				return false;
 			}
 
 			auto it = setters.find(opt_num);
@@ -117,6 +118,14 @@ public:
 			argv++;
 		}
 		return true;
+	}
+
+	void print_help(){
+		printf("Options:\n");
+		for(int i=0;i<opts.size();i++){
+			auto o = opts[i];
+			printf("  -%c, --%s\t\t%s\n", o.s_opt, o.l_opt.c_str(), o.desc.c_str());
+		}
 	}
 
 private:

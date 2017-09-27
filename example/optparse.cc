@@ -16,7 +16,11 @@ try{
 	int hoge;
 	op.add_opt(hoge, 'h', "hoge", "hogehoge");
 
-	op.parse(argc, argv);
+	if(!op.parse(argc, argv)){
+	//	std::cout<<"failed."<<std::endl;
+		op.print_help();
+		return -1;
+	}
 
 	std::cout<<"neko:"<<neko<<std::endl;
 	std::cout<<"hoge:"<<hoge<<std::endl;
