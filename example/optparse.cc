@@ -1,5 +1,5 @@
 #include <iostream>
-#include <sksat/optparse.hpp>
+#include <sksat/cmdline.hpp>
 
 int func(int argc, char **argv){
 	std::cout<<"option "<<argv[0]<<" : ";

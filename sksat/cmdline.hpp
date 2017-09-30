@@ -138,8 +138,8 @@ public:
 			if(it != setters.end()){
 				if((argc-i)>1){
 					ret = it->second(argv[1]);
-					i++;
-					argv++;
+					i += ret;
+					argv += ret;
 				}else{
 					ret = it->second("");
 				}
