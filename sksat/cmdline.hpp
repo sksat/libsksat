@@ -30,6 +30,28 @@ public:
 		add_opt(arg, o);
 	}
 
+	template<typename T>
+	void add_opt(T &arg, sksat::string l_opt, sksat::string desc){
+		optparse::option o = {
+			.s_opt = '\0',
+			.l_opt = l_opt,
+			.desc  = desc,
+			.func  = nullptr
+		};
+		add_opt(arg, o);
+	}
+
+	template<typename T>
+	void add_opt(T &arg, char s_opt, sksat::string desc){
+		optparse::option o = {
+			.s_opt = s_opt,
+			.l_opt = "",
+			.desc  = desc,
+			.func  = nullptr
+		};
+		add_opt(arg, o);
+	}
+
 	void add_opt(optparse::option o){
 		opts.push_back(o);
 	}
@@ -49,6 +71,16 @@ public:
 		option o = {
 			.s_opt = s_opt,
 			.l_opt = "",
+			.desc  = desc,
+			.func  = func
+		};
+		add_opt(o);
+	}
+
+	void add_opt(sksat::string l_opt, sksat::string desc, opt_func func){
+		option o = {
+			.s_opt = '\0',
+			.l_opt = l_opt,
 			.desc  = desc,
 			.func  = func
 		};
@@ -127,7 +159,12 @@ public:
 		printf("Options:\n");
 		for(int i=0;i<opts.size();i++){
 			auto o = opts[i];
-			printf("  -%c, --%s\t\t%s\n", o.s_opt, o.l_opt.c_str(), o.desc.c_str());
+			printf("  ");
+			if(o.s_opt != '\0')
+				printf("-%c, ", o.s_opt);
+			if(o.l_opt != "")
+				printf("--%s", o.l_opt.c_str());
+			printf("\t\t%s\n", o.desc.c_str());
 		}
 	}
 
