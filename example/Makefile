@@ -2,7 +2,7 @@ CXX:= g++
 
 CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = optparse.cc
+SRC = window.cc
 
 default:
 	$(CXX) $(CXXFLAGS) $(SRC) -o a.out
