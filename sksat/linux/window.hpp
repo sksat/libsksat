@@ -27,6 +27,7 @@ public:
 					xpos, ypos, xsize, ysize,
 					5, 0, 0);
 		XSetStandardProperties(disp, win, title.c_str(), "icon", None, &argv, 1, nullptr);
+		opend = true;
 	}
 
 	void close(){
