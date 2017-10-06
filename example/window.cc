@@ -5,6 +5,8 @@ using namespace sksat;
 
 int main(int argc, char **argv){
 try{
+	window::default_xpos  = 100;
+	window::default_ypos  = 100;
 	window::default_xsize = 100;
 	window::default_ysize = 200;
 	window win;

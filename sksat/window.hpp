@@ -62,7 +62,6 @@ size_t window_base::default_ypos  = 0;
 
 
 #if defined(OS_WIN32)
-	#error not implemented.
 	#include <sksat/win32/window.hpp>
 	namespace sksat{ using sksat::win32::window; }
 #elif defined(OS_LINUX)

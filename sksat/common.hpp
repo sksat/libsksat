@@ -4,8 +4,6 @@
 #include <sksat/platform.hpp>
 
 #include <cstdio>
-#undef popen
-#undef pclose
 
 namespace sksat
 {
@@ -34,8 +32,12 @@ namespace sksat
 	using ::getc;
 	using ::getchar;
 
+#ifdef OS_WIN
+	#warning popen,pclose has not been declared (why?)
+#else
 	using ::popen;
 	using ::pclose;
+#endif
 }
 
 #ifndef NO_STL
