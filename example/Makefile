@@ -2,13 +2,13 @@ CXX:= g++
 
 CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = optparse.cc
+SRC = window.cc
 
 default:
-	$(CXX) $(CXXFLAGS) $(SRC) -o a.out
+	$(CXX) $(CXXFLAGS) $(SRC) -o a.exe
 
 clean:
-	rm -fr a.out
+	rm -fr a.exe
 
 vector:
 	$(eval SRC=vector-test.cc)
