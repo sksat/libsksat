@@ -8,8 +8,9 @@ namespace sksat {
 
 class window_base {
 public:
-	window_base() : opend(false), xsize(default_xsize), ysize(default_ysize) {}
-	window_base(size_t x, size_t y) : opend(false), xsize(x), ysize(y) {}
+	window_base() : opend(false), xsize(default_xsize), ysize(default_ysize), xpos(default_xpos), ypos(default_ypos) {}
+	window_base(size_t x, size_t y) : opend(false), xsize(x), ysize(y), xpos(default_xpos), ypos(default_ypos) {}
+	window_base(sksat::string &t, size_t x, size_t y) : opend(false), title(t), xsize(x), ysize(y), xpos(default_xpos), ypos(default_ypos) {}
 
 	void open(){ opend = api_open(); }
 	void open(size_t x, size_t y){ open(); set_size(x,y); }
