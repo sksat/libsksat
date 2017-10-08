@@ -18,7 +18,7 @@ using namespace ::win32;
 
 class window : public sksat::window_base {
 public:
-	void open(){
+	bool api_open(){
 		hInst = GetModuleHandle("");
 		hWnd = CreateWindow("STATIC", "fuga",
 				WS_CAPTION,
@@ -27,22 +27,23 @@ public:
 				nullptr, nullptr,
 				hInst, nullptr);
 		if(hWnd == nullptr)
-			ASSERT(true, "error");
+			return false;
+		return true;
 	}
 
-	void close(){
+	void api_close(){
 		ASSERT(true, "not implemented.");
 	}
 
-	void show(){
+	void api_show(){
 		ShowWindow(hWnd, SW_SHOW);
 	}
 
-	void update_title(sksat::string &t){
+	void api_set_title(const char *t){
 		ASSERT(true, sksat::string("not implemented: ") + t);
 	}
 
-	void update_size(size_t x, size_t y){
+	void api_set_size(size_t x, size_t y){
 		ASSERT(true, "not implemented.");
 	}
 private:
