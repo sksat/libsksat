@@ -18,8 +18,7 @@ using namespace x11;
 class window : public sksat::window_base {
 public:
 	//using namespace ::x11;
-	using sksat::window_base::open;
-	void open(){
+	bool api_open(){
 		char *argv = new char[1];
 		disp = XOpenDisplay(NULL);
 		win = XCreateSimpleWindow(disp,
@@ -30,21 +29,21 @@ public:
 		opend = true;
 	}
 
-	void close(){
+	void api_close(){
 		ASSERT(true, "not impl.");
 	}
 
-	void show(){
+	void api_show(){
 		// ASSERT(true, "not impl.");
 		XMapRaised(disp, win);
 		XFlush(disp);
 	}
 
-	void update_title(sksat::string &t){
+	void api_set_title(const char *t){
 		ASSERT(true, "not impl.");
 	}
 
-	void update_size(size_t x, size_t y){
+	void api_set_size(size_t x, size_t y){
 		ASSERT(true, "not impl.");
 	}
 private:
