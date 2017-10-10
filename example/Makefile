@@ -5,10 +5,10 @@ CXXFLAGS = -g -O0 -std=c++11 -I../
 SRC = window.cc
 
 default:
-	$(CXX) $(CXXFLAGS) $(SRC) -o a.exe
+	$(CXX) $(CXXFLAGS) $(SRC) -lX11
 
 clean:
-	rm -fr a.exe
+	rm -fr a.*
 
 vector:
 	$(eval SRC=vector-test.cc)

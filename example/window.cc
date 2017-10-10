@@ -5,14 +5,11 @@ using namespace sksat;
 
 int main(int argc, char **argv){
 try{
-	window::default_xpos  = 100;
-	window::default_ypos  = 100;
-	window::default_xsize = 100;
-	window::default_ysize = 200;
 	window win;
 	win.open();
 	win.show();
-	getchar();
+	win.loop();
+//	getchar();
 	return 0;
 }catch(sksat::string s){
 	std::cout<<s;
