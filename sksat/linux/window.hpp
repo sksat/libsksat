@@ -46,6 +46,19 @@ public:
 	void api_set_size(size_t x, size_t y){
 		ASSERT(true, "not impl.");
 	}
+
+	inline void api_flush(){
+		XFlush(disp);
+	}
+
+	inline bool api_step_loop(){
+		XNextEvent(disp, &event);
+		switch(event.type){
+		default:
+			throw "not implemented: sksat::linux:x11::window::api_step_loop()";
+		}
+		return true;
+	}
 private:
 	x11::Display *disp;
 	x11::Window win;
