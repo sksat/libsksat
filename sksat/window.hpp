@@ -37,6 +37,20 @@ public:
 	size_t get_ysize() const { return ysize; }
 
 	operator bool () const { return opend; }
+
+	// 描画関数
+/*
+	void draw_point(sksat::color &col, size_t x, size_t y);
+	void draw_line(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1);
+	void draw_rect(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
+
+	// set_color()でセットした色
+	void draw_point(size_t x, size_t y);
+	void draw_line(size_t x0, size_t y0, size_t x1, size_t y1);
+	void draw_rect(size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
+
+	void fill_rect(size_t x0, size_t y0, size_t x1, size_t y1){ draw_rect(x0,y0,x1,y1,true); }
+*/
 protected:
 	virtual bool api_open() = 0;
 	virtual void api_close() = 0;
