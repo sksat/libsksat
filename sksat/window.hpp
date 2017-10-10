@@ -17,9 +17,9 @@ public:
 	void open(sksat::string &t){ set_title(t); open(); }
 	void open(sksat::string &t, size_t x, size_t y){ set_title(t); open(x,y); }
 
-	void close(){ api_close(); opend=false; }
+	void close(){ if(opend) api_close(); opend=false; }
 
-	void show(){ api_show(); }
+	void show(){ if(opend) api_show(); }
 
 	void set_title(sksat::string &t){ title = t; set_title(t.c_str()); }
 	void set_title(const char *t){ title = t; api_set_title(t);  }
@@ -51,12 +51,20 @@ public:
 
 	void fill_rect(size_t x0, size_t y0, size_t x1, size_t y1){ draw_rect(x0,y0,x1,y1,true); }
 */
-protected:
+
+	inline void flush(){ if(opend) api_flush(); }
+
+	inline bool step_loop(){ if(opend) return api_step_loop(); }
+	inline void loop(){ while(api_step_loop()); }
+
+protected: // 環境依存部(純粋仮想関数)
 	virtual bool api_open() = 0;
 	virtual void api_close() = 0;
 	virtual void api_show() = 0;
 	virtual void api_set_title(const char *t) = 0;
 	virtual void api_set_size(size_t x, size_t y) = 0;
+	virtual void api_flush() = 0;
+	virtual bool api_step_loop() = 0;
 public:
 	static size_t default_xsize, default_ysize;
 	static size_t default_xpos, default_ypos;
