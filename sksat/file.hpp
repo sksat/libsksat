@@ -53,13 +53,17 @@ public:
 		case mode::rb:
 			fm[0] = 'r';
 			fm[1] = 'b';
+			break;
 		case mode::wb:
 			fm[0] = 'w';
 			fm[1] = 'b';
+			break;
 		case mode::r:
 			fm[0] = 'r';
+			break;
 		case mode::w:
 			fm[0] = 'w';
+			break;
 		default:
 			throw "error!";
 		}
@@ -87,6 +91,9 @@ public:
 	}
 
 	sksat::string get_name() const { return name; }
+
+	void set_mode(sksat::file::mode m){ if(!opend) fmode = m; }
+	sksat::file::mode get_mode(){ return fmode; }
 protected:
 	mode fmode;
 	bool opend;
