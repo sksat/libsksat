@@ -2,13 +2,13 @@ CXX:= g++
 
 CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = window.cc
+SRC = color.cc
 
 default:
-	$(CXX) $(CXXFLAGS) $(SRC) -o a.exe
+	$(CXX) $(CXXFLAGS) $(SRC)
 
 clean:
-	rm -fr a.exe
+	rm -fr a.*
 
 vector:
 	$(eval SRC=vector-test.cc)
