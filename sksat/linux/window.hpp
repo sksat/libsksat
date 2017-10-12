@@ -21,26 +21,29 @@ public:
 	bool api_open(){
 		char *argv = new char[1];
 		disp = XOpenDisplay(NULL);
+		root = DefaultRootWindow(disp);
 		win = XCreateSimpleWindow(disp,
 					DefaultRootWindow(disp),
 					xpos, ypos, xsize, ysize,
 					5, 0, 0);
 		XSetStandardProperties(disp, win, title.c_str(), "icon", None, &argv, 1, nullptr);
+		XSelectInput(disp, win, ExposureMask);
 		opend = true;
 	}
 
 	void api_close(){
-		ASSERT(true, "not impl.");
+		XDestroyWindow(disp, win);
+		XCloseDisplay(disp);
 	}
 
 	void api_show(){
-		// ASSERT(true, "not impl.");
 		XMapRaised(disp, win);
 		XFlush(disp);
 	}
 
 	void api_set_title(const char *t){
-		ASSERT(true, "not impl.");
+		if(XStoreName(disp, win, t) != 0) return;
+		throw "error: x11::XStoreName";
 	}
 
 	void api_set_size(size_t x, size_t y){
@@ -54,13 +57,16 @@ public:
 	inline bool api_step_loop(){
 		XNextEvent(disp, &event);
 		switch(event.type){
+		case Expose:
+			break;
 		default:
-			throw "not implemented: sksat::linux:x11::window::api_step_loop()";
+			throw "not implemented event: sksat::linux:x11::window::api_step_loop()";
 		}
 		return true;
 	}
 private:
 	x11::Display *disp;
+	x11::Window root;
 	x11::Window win;
 	x11::GC gc;
 	x11::XEvent event;
