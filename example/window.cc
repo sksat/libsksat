@@ -5,16 +5,28 @@ using namespace sksat;
 
 int main(int argc, char **argv){
 try{
-	window::default_xpos  = 100;
-	window::default_ypos  = 100;
-	window::default_xsize = 100;
-	window::default_ysize = 200;
 	window win;
 	win.open();
 	win.show();
-	getchar();
+	win.set_title("hoge");
+	auto red = sksat::color(0xff,0x00,0x00);
+	win.draw_line(red, 0, 0, 30, 50); // （ヽ *ﾟ▽ﾟ*）ノわーい！ 線が出るよ！ ( *ﾟ▽ﾟ* っ)З ==3
+	win.flush();
+
+	for(int i=0;;i++){
+		if(i%2==0)
+			win.move(100,100);
+		else
+			win.move(0,0);
+		win.flush();
+		getchar();
+	}
+
+	win.step_loop();
 	return 0;
-}catch(sksat::string s){
+}catch(const char *s){
+	std::cout<<s;
+}catch(std::string s){
 	std::cout<<s;
 }
 }

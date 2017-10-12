@@ -3,6 +3,7 @@
 
 #include <sksat/common.hpp>
 #include <sksat/platform.hpp>
+#include <sksat/color.hpp>
 
 namespace sksat {
 
@@ -17,9 +18,9 @@ public:
 	void open(sksat::string &t){ set_title(t); open(); }
 	void open(sksat::string &t, size_t x, size_t y){ set_title(t); open(x,y); }
 
-	void close(){ api_close(); opend=false; }
+	void close(){ if(opend) api_close(); opend=false; }
 
-	void show(){ api_show(); }
+	void show(){ if(opend) api_show(); }
 
 	void set_title(sksat::string &t){ title = t; set_title(t.c_str()); }
 	void set_title(const char *t){ title = t; api_set_title(t);  }
@@ -36,13 +37,68 @@ public:
 	size_t get_xsize() const { return xsize; }
 	size_t get_ysize() const { return ysize; }
 
+	void move(size_t x, size_t y){ xpos=x; ypos=y; api_move(x,y); }
+	void set_pos(size_t x, size_t y){ move(x,y); }
+	void set_xpos(size_t x){ move(x,ypos); }
+	void set_ypos(size_t y){ move(xpos,y); }
+
 	operator bool () const { return opend; }
-protected:
+
+	// 描画関数
+	inline void draw_point(sksat::color &col, size_t x, size_t y){ api_draw_point(col, x, y); }
+	virtual void draw_line(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1){
+		int x, y, len, dx, dy;
+		dx = x1-x0; dy = y1-y0;
+		x = x0<<10; y = y0<<10;
+		if(dx < 0) dx = -dx;
+		if(dy < 0) dy = -dy;
+		if(dx >= dy){
+			len = dx+1;
+			dx = 1024;
+			if(x0 > x1) dx = -1 * dx;
+			int tmp=-1;
+			if(y0 <= y1) tmp=1;
+			dy = ((y1-y0+tmp) << 10) / len;
+		}else{
+			len = dy+1;
+			dy = 1024;
+			if(y0 > y1) dy = -1 * dy;
+			int tmp=-1;
+			if(x0 <= x1) tmp=1;
+			dx = ((x1-x0+tmp) << 10) / len;
+		}
+		for(int i=0;i<len;i++){
+			draw_point(col, x>>10, y>>10);
+			x+=dx; y+=dy;
+		}
+	}
+//	void draw_rect(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
+
+	// set_color()でセットした色
+//	void draw_point(size_t x, size_t y);
+//	void draw_line(size_t x0, size_t y0, size_t x1, size_t y1);
+//	void draw_rect(size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
+
+//	void fill_rect(size_t x0, size_t y0, size_t x1, size_t y1){ draw_rect(x0,y0,x1,y1,true); }
+
+	inline void flush(){ if(opend) api_flush(); }
+
+	inline bool step_loop(){ if(opend) return api_step_loop(); }
+	inline void loop(){ while(api_step_loop()); }
+
+protected: // 環境依存部(純粋仮想関数)
 	virtual bool api_open() = 0;
 	virtual void api_close() = 0;
 	virtual void api_show() = 0;
 	virtual void api_set_title(const char *t) = 0;
 	virtual void api_set_size(size_t x, size_t y) = 0;
+	virtual void api_flush() = 0;
+	virtual void api_move(size_t x, size_t y) = 0;
+
+	// 描画
+	virtual void api_draw_point(sksat::color &col, size_t x, size_t y) = 0;
+
+	virtual bool api_step_loop() = 0;
 public:
 	static size_t default_xsize, default_ysize;
 	static size_t default_xpos, default_ypos;
