@@ -15,13 +15,32 @@ namespace linux {
 
 using namespace x11;
 
+unsigned long col2xcol(Display *disp, sksat::color &col){
+	Colormap cm = DefaultColormap(disp, DefaultScreen(disp));
+	XColor xc;
+	xc.red  = 257 * col.r;
+	xc.green= 257 * col.g;
+	xc.blue = 257 * col.b;
+	XAllocColor(disp, cm, &xc);
+	return xc.pixel;
+}
+
 class window : public sksat::window_base {
 public:
-	//using namespace ::x11;
+	window() : sksat::window_base() { init(); }
+
+	void init(){
+		static int i=0;
+		if(i!=0){
+			XCloseDisplay(disp);
+		}
+		disp = XOpenDisplay(nullptr);
+		root = DefaultRootWindow(disp);
+		i++;
+	}
+
 	bool api_open(){
 		char *argv = new char[1];
-		disp = XOpenDisplay(NULL);
-		root = DefaultRootWindow(disp);
 		win = XCreateSimpleWindow(disp,
 					DefaultRootWindow(disp),
 					xpos, ypos, xsize, ysize,
@@ -56,6 +75,13 @@ public:
 
 	inline void api_flush(){
 		XFlush(disp);
+	}
+
+	inline void api_draw_point(sksat::color &col, size_t x, size_t y){
+		GC gc = XCreateGC(disp, win, 0, 0);
+		XSetForeground(disp, gc, col2xcol(disp, col));
+		XDrawPoint(disp, win, gc, x, y);
+		XFreeGC(disp, gc);
 	}
 
 	inline bool api_step_loop(){
