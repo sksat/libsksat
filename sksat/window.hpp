@@ -69,7 +69,7 @@ protected: // 環境依存部(純粋仮想関数)
 	virtual void api_set_title(const char *t) = 0;
 	virtual void api_set_size(size_t x, size_t y) = 0;
 	virtual void api_flush() = 0;
-	virtual void api_move() = 0;
+	virtual void api_move(size_t x, size_t y) = 0;
 	virtual bool api_step_loop() = 0;
 public:
 	static size_t default_xsize, default_ysize;
