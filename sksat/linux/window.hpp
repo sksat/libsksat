@@ -50,6 +50,10 @@ public:
 		ASSERT(true, "not impl.");
 	}
 
+	inline void api_move(size_t x, size_t y){
+		XMoveWindow(disp, win, x, y); // XFlushしないといけないので注意
+	}
+
 	inline void api_flush(){
 		XFlush(disp);
 	}
