@@ -3,6 +3,7 @@
 
 #include <sksat/common.hpp>
 #include <sksat/platform.hpp>
+#include <sksat/color.hpp>
 
 namespace sksat {
 
@@ -44,18 +45,16 @@ public:
 	operator bool () const { return opend; }
 
 	// 描画関数
-/*
-	void draw_point(sksat::color &col, size_t x, size_t y);
-	void draw_line(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1);
-	void draw_rect(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
+	inline void draw_point(sksat::color &col, size_t x, size_t y){ api_draw_point(col, x, y); }
+//	void draw_line(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1);
+//	void draw_rect(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
 
 	// set_color()でセットした色
-	void draw_point(size_t x, size_t y);
-	void draw_line(size_t x0, size_t y0, size_t x1, size_t y1);
-	void draw_rect(size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
+//	void draw_point(size_t x, size_t y);
+//	void draw_line(size_t x0, size_t y0, size_t x1, size_t y1);
+//	void draw_rect(size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
 
-	void fill_rect(size_t x0, size_t y0, size_t x1, size_t y1){ draw_rect(x0,y0,x1,y1,true); }
-*/
+//	void fill_rect(size_t x0, size_t y0, size_t x1, size_t y1){ draw_rect(x0,y0,x1,y1,true); }
 
 	inline void flush(){ if(opend) api_flush(); }
 
@@ -63,6 +62,7 @@ public:
 	inline void loop(){ while(api_step_loop()); }
 
 protected: // 環境依存部(純粋仮想関数)
+	virtual void init() = 0;
 	virtual bool api_open() = 0;
 	virtual void api_close() = 0;
 	virtual void api_show() = 0;
@@ -70,6 +70,10 @@ protected: // 環境依存部(純粋仮想関数)
 	virtual void api_set_size(size_t x, size_t y) = 0;
 	virtual void api_flush() = 0;
 	virtual void api_move(size_t x, size_t y) = 0;
+
+	// 描画
+	virtual void api_draw_point(sksat::color &col, size_t x, size_t y) = 0;
+
 	virtual bool api_step_loop() = 0;
 public:
 	static size_t default_xsize, default_ysize;
