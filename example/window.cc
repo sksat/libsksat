@@ -8,6 +8,7 @@ try{
 	window win;
 	win.open();
 	win.show();
+	win.set_title("hoge");
 	win.loop();
 	return 0;
 }catch(const char *s){
