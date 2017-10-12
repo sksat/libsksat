@@ -36,6 +36,11 @@ public:
 	size_t get_xsize() const { return xsize; }
 	size_t get_ysize() const { return ysize; }
 
+	void move(size_t x, size_t y){ xpos=x; ypos=y; api_move(x,y); }
+	void set_pos(size_t x, size_t y){ move(x,y); }
+	void set_xpos(size_t x){ move(x,ypos); }
+	void set_ypos(size_t y){ move(xpos,y); }
+
 	operator bool () const { return opend; }
 
 	// 描画関数
@@ -64,6 +69,7 @@ protected: // 環境依存部(純粋仮想関数)
 	virtual void api_set_title(const char *t) = 0;
 	virtual void api_set_size(size_t x, size_t y) = 0;
 	virtual void api_flush() = 0;
+	virtual void api_move() = 0;
 	virtual bool api_step_loop() = 0;
 public:
 	static size_t default_xsize, default_ysize;
