@@ -62,7 +62,6 @@ public:
 	inline void loop(){ while(api_step_loop()); }
 
 protected: // 環境依存部(純粋仮想関数)
-	virtual void init() = 0;
 	virtual bool api_open() = 0;
 	virtual void api_close() = 0;
 	virtual void api_show() = 0;
