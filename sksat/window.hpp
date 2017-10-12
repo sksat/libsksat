@@ -46,7 +46,32 @@ public:
 
 	// 描画関数
 	inline void draw_point(sksat::color &col, size_t x, size_t y){ api_draw_point(col, x, y); }
-//	void draw_line(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1);
+	virtual void draw_line(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1){
+		int x, y, len, dx, dy;
+		dx = x1-x0; dy = y1-y0;
+		x = x0<<10; y = y0<<10;
+		if(dx < 0) dx = -dx;
+		if(dy < 0) dy = -dy;
+		if(dx >= dy){
+			len = dx+1;
+			dx = 1024;
+			if(x0 > x1) dx = -1 * dx;
+			int tmp=-1;
+			if(y0 <= y1) tmp=1;
+			dy = ((y1-y0+tmp) << 10) / len;
+		}else{
+			len = dy+1;
+			dy = 1024;
+			if(y0 > y1) dy = -1 * dy;
+			int tmp=-1;
+			if(x0 <= x1) tmp=1;
+			dx = ((x1-x0+tmp) << 10) / len;
+		}
+		for(int i=0;i<len;i++){
+			draw_point(col, x>>10, y>>10);
+			x+=dx; y+=dy;
+		}
+	}
 //	void draw_rect(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
 
 	// set_color()でセットした色
