@@ -9,9 +9,8 @@ try{
 	win.open();
 	win.show();
 	win.loop();
-//	getchar();
 	return 0;
-}catch(sksat::string s){
+}catch(const char *s){
 	std::cout<<s;
 }
 }
