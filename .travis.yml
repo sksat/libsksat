@@ -1,0 +1,5 @@
+sudo: false
+language: cpp
+script:
+  - g++ --version
+  - make -C example
