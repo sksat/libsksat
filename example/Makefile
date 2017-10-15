@@ -2,7 +2,7 @@ CXX:= g++
 
 CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = window.cc
+SRC = endian.cc
 
 default:
 	$(CXX) $(CXXFLAGS) $(SRC) -lX11
