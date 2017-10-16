@@ -9,7 +9,7 @@ namespace sksat {
 
 class file {
 public:
-	enum class mode {
+	enum mode {
 		read_binary=0, rb=0,
 		write_binary=1, wb=1,
 		read_text=2, r=2,
@@ -93,7 +93,7 @@ public:
 
 	sksat::string get_name() const { return name; }
 
-	void set_mode(sksat::file::mode m){ if(!opend) fmode = m; }
+	virtual void set_mode(sksat::file::mode m){ if(!opend) fmode = m; }
 	sksat::file::mode get_mode(){ return fmode; }
 protected:
 	mode fmode;
@@ -105,6 +105,29 @@ protected:
 	char *data;
 };
 
-}
+class text_file : public file {
+public:
+	void set_mode(const sksat::file::mode m){
+		if((m != file::r) && (m != file::w)){
+			throw "cannot set binary mode!";
+		}
+		file::set_mode(m);
+	}
+};
+
+class binary_file : public file {
+public:
+	void set_mode(const file::mode m){
+		if((m != file::rb) && (m != file::wb)){
+			throw "cannot set text mode!";
+		}
+		file::set_mode(m);
+	}
+};
+
+using txtfile = text_file;
+using binfile = binary_file;
+
+} // namespace sksat
 
 #endif

@@ -7,9 +7,9 @@ try{
 	using namespace sksat;
 	if(file::exist("test.txt"))
 		cout<<"exist"<<endl;
-	file f;
+	txtfile f;
 	f.set_name("test.txt");
-	f.set_mode(sksat::file::mode::w);
+	f.set_mode(sksat::file::w);
 	f.open();
 	f.close();
 }catch(const char *e){
