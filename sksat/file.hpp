@@ -18,8 +18,7 @@ public:
 
 	file() : data(nullptr) { init(); } // initでdelete食らわないようにしっかりnullptr
 	~file(){
-		if(fp!=nullptr)
-			fclose(fp);
+		close();
 	}
 
 	void init(){
@@ -78,8 +77,10 @@ public:
 	bool open(sksat::string &fname){ set_name(fname); open(); }
 
 	void close(){
-		if(fp != nullptr)
-			fclose(fp);
+		if(!opend) return;
+		if(fp == nullptr) return;
+		int ret = fclose(fp);
+//		if(ret == EOF) // error
 		opend = false;
 	}
 
