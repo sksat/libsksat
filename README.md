@@ -1,6 +1,7 @@
 # libsksat
 
-[![Build Status](https://api.travis-ci.org/sk2sat/libsksat.svg?branch=master)](https://travis-ci.org/sk2sat/libsksat)
+master:  [![Build Status](https://api.travis-ci.org/sk2sat/libsksat.svg?branch=master)](https://travis-ci.org/sk2sat/libsksat)
+develop: [![Build Status](https://api.travis-ci.org/sk2sat/libsksat.svg?branch=develop)](https://travis-ci.org/sk2sat/libsksat)
 
 sksatのC++向けライブラリです．
 基本的にはこのリポジトリをcloneして，sksatディレクトリを/usr/includeに入れるなりなんなりして，使いたいものをincludeするだけで使えます．
