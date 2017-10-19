@@ -2,7 +2,7 @@ CXX:= g++
 
 CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = endian.cc
+SRC = image.cc
 
 default:
 	$(CXX) $(CXXFLAGS) $(SRC) -lX11
