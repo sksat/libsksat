@@ -70,7 +70,7 @@ public:
 	}
 
 	void api_set_size(size_t x, size_t y){
-		ASSERT(true, "not impl.");
+		XResizeWindow(disp, win, x, y);
 	}
 
 	inline void api_move(size_t x, size_t y){

@@ -16,7 +16,12 @@ try{
 	win.draw_rect(blue, 55, 55, 85, 85, false);
 	win.flush();
 	win.show();
-	win.loop();
+	for(int i=0;;i++){
+		win.set_size(100+(i%2)*50,200);
+		win.flush();
+		win.step_loop();
+		getchar();
+	}
 	return 0;
 }catch(const char *s){
 	std::cout<<s;
