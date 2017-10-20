@@ -48,7 +48,8 @@ public:
 		XSetStandardProperties(disp, win, title.c_str(), "icon", None, &argv, 1, nullptr);
 		XSelectInput(disp, win, ExposureMask);
 		alloc_pixmap(xsize, ysize);
-		gc = XCreateGC(disp, win, 0, 0);
+		gc = XCreateGC(disp, pixmap, 0, 0);
+		XSetGraphicsExposures(disp, gc, false); // コピーをするたびにコピー先の窓にNoExopseイベントがイベントマスクの設定に関係無しに送られないようにする : http://www-cms.phys.s.u-tokyo.ac.jp/~naoki/CIPINTRO/XLIB/xlib7.html
 		opend = true;
 	}
 
@@ -94,7 +95,7 @@ public:
 			XCopyArea(disp, pixmap, win, gc, 0, 0, xsize, ysize, 0, 0);
 			break;
 		default:
-		//	throw "not implemented event: sksat::linux:x11::window::api_step_loop()";
+			throw "not implemented event: sksat::linux:x11::window::api_step_loop()";
 		//	ASSERT(true, event.type);
 			break;
 		}
