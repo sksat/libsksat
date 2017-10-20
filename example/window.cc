@@ -12,17 +12,7 @@ try{
 	auto red = sksat::color(0xff,0x00,0x00);
 	win.draw_line(red, 0, 0, 30, 50); // （ヽ *ﾟ▽ﾟ*）ノわーい！ 線が出るよ！ ( *ﾟ▽ﾟ* っ)З ==3
 	win.flush();
-
-	for(int i=0;;i++){
-		if(i%2==0)
-			win.move(100,100);
-		else
-			win.move(0,0);
-		win.flush();
-		getchar();
-	}
-
-	win.step_loop();
+	win.loop();
 	return 0;
 }catch(const char *s){
 	std::cout<<s;
