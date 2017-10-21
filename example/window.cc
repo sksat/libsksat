@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <iostream>
 #include <sksat/window.hpp>
 
@@ -18,12 +19,13 @@ try{
 	win.draw_rect(blue, 55, 55, 85, 85, false);
 	win.flush();
 	win.show();
-	for(int i=0;;i++){
-		win.set_size(50+(i%2)*50,100);
-//		win.flush();
-		win.step_loop();
-		getchar();
+	for(int i=0;i<3;i++){
+		win.set_size(150+(i%2)*50,100);
+		win.flush();
+//		win.step_loop();
+		sleep(1);
 	}
+	win.loop();
 	return 0;
 }catch(const char *s){
 	std::cout<<s;

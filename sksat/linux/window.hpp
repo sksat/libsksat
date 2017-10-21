@@ -72,6 +72,9 @@ public:
 	void api_set_size(size_t x, size_t y){
 		XResizeWindow(disp, win, x, y);
 		resize_pixmap(x, y);
+		XFreeGC(disp, gc);
+		gc = XCreateGC(disp, pixmap, 0, 0);
+		XSetGraphicsExposures(disp, gc, false);
 	}
 
 	inline void api_move(size_t x, size_t y){
@@ -79,6 +82,7 @@ public:
 	}
 
 	inline void api_flush(){
+		XCopyArea(disp, pixmap, win, gc, 0, 0, xsize, ysize, 0, 0);
 		XFlush(disp);
 	}
 
@@ -117,6 +121,7 @@ private:
 		x11:Pixmap old = pixmap;
 		pixmap_allocated = false;
 		alloc_pixmap(x,y);
+		clear();
 		XCopyArea(disp, old, pixmap, gc, 0, 0, x, y, 0, 0);
 		XFreePixmap(disp, old);
 	}
