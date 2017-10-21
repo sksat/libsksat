@@ -71,6 +71,7 @@ public:
 
 	void api_set_size(size_t x, size_t y){
 		XResizeWindow(disp, win, x, y);
+		resize_pixmap(x, y);
 	}
 
 	inline void api_move(size_t x, size_t y){
@@ -89,16 +90,20 @@ public:
 	}
 
 	inline bool api_step_loop(){
-		XNextEvent(disp, &event);
-		switch(event.type){
-		case Expose:
-			XCopyArea(disp, pixmap, win, gc, 0, 0, xsize, ysize, 0, 0);
-			break;
-		default:
-			throw "not implemented event: sksat::linux:x11::window::api_step_loop()";
-		//	ASSERT(true, event.type);
-			break;
+		if(XPending(disp) > 0){
+			XNextEvent(disp, &event);
+			switch(event.type){
+			case Expose:
+				XCopyArea(disp, pixmap, win, gc, 0, 0, xsize, ysize, 0, 0);
+				break;
+			default:
+				throw "not implemented event: sksat::linux:x11::window::api_step_loop()";
+			//	ASSERT(true, event.type);
+				break;
+			}
+			return true;
 		}
+		// idle
 		return true;
 	}
 private:
@@ -106,6 +111,14 @@ private:
 			if(pixmap_allocated) XFreePixmap(disp, pixmap);
 			pixmap = XCreatePixmap(disp, win, x, y, DefaultDepth(disp, 0));
 			pixmap_allocated = true;
+	}
+
+	void resize_pixmap(size_t x, size_t y){
+		x11:Pixmap old = pixmap;
+		pixmap_allocated = false;
+		alloc_pixmap(x,y);
+		XCopyArea(disp, old, pixmap, gc, 0, 0, x, y, 0, 0);
+		XFreePixmap(disp, old);
 	}
 
 	bool pixmap_allocated;

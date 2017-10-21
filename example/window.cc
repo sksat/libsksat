@@ -5,6 +5,8 @@ using namespace sksat;
 
 int main(int argc, char **argv){
 try{
+	window::default_xsize = 100;
+	window::default_ysize = 100;
 	window win;
 	win.open();
 	win.set_title("hoge");
@@ -17,8 +19,8 @@ try{
 	win.flush();
 	win.show();
 	for(int i=0;;i++){
-		win.set_size(100+(i%2)*50,200);
-		win.flush();
+		win.set_size(50+(i%2)*50,100);
+//		win.flush();
 		win.step_loop();
 		getchar();
 	}
