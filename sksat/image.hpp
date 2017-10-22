@@ -12,8 +12,6 @@ public:
 	virtual void init(size_t x, size_t y){ xsize = x; ysize = y; }
 	virtual void init(){ xsize = default_xsize; ysize = default_ysize; }
 
-	static size_t default_xsize, default_ysize;
-
 	// 描画関数 継承先で”現在の色”を管理する
 	virtual void draw_point(size_t x, size_t y) = 0;
 	virtual void draw_line(size_t x0, size_t y0, size_t x1, size_t y1){
@@ -42,6 +40,18 @@ public:
 			x+=dx; y+=dy;
 		}
 	}
+
+	bool check_size(size_t pos) const {
+		if((xsize*ysize) <= pos) return false;
+		return true;
+	}
+	bool check_size(size_t x, size_t y) const {
+		if(xsize <= x) return false;
+		if(ysize <= y) return false;
+		return true;
+	}
+public:
+	static size_t default_xsize, default_ysize;
 protected:
 	size_t xsize, ysize;
 };
@@ -70,6 +80,16 @@ public:
 		this->init(xsize, ysize);
 	}
 
+	T& operator[](size_t pos) & {
+		if(!check_size(pos)) throw "out of size";
+		return data[pos];
+	}
+
+	const T& operator[](size_t pos) const& {
+		if(!check_size(pos)) throw "out of size";
+		return data[pos];
+	}
+
 	void draw_point(size_t x, size_t y){
 		if(x>=xsize || y>=ysize) throw "out of size";
 		data[y*xsize + x] = col_now;
@@ -78,7 +98,7 @@ public:
 	void draw_line(T &col, size_t x0, size_t y0, size_t x1, size_t y1){ col_now = col; draw_line(x0,y0,x1,y1); }
 
 	T col_now;
-private:
+protected:
 	T *data;
 };
 
