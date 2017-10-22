@@ -2,10 +2,10 @@ CXX:= g++
 
 CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = color.cc
+SRC = image.cc
 
 default:
-	$(CXX) $(CXXFLAGS) $(SRC)
+	$(CXX) $(CXXFLAGS) $(SRC) -lX11
 
 clean:
 	rm -fr a.*

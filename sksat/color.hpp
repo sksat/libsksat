@@ -31,6 +31,11 @@ public:
 		return *this;
 	}
 
+	rgba32& operator=(rgba32 &rgba){
+		set(rgba.r, rgba.g, rgba.b, rgba.a);
+		return *this;
+	}
+
 	uint8_t a;
 };
 
