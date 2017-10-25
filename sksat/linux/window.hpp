@@ -48,6 +48,7 @@ public:
 		XSetStandardProperties(disp, win, title.c_str(), "icon", None, &argv, 1, nullptr);
 		XSelectInput(disp, win, ExposureMask);
 		opend = true;
+		return opend;
 	}
 
 	void api_close(){
