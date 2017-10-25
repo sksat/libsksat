@@ -51,6 +51,7 @@ public:
 		gc = XCreateGC(disp, pixmap, 0, 0);
 		XSetGraphicsExposures(disp, gc, false); // コピーをするたびにコピー先の窓にNoExopseイベントがイベントマスクの設定に関係無しに送られないようにする : http://www-cms.phys.s.u-tokyo.ac.jp/~naoki/CIPINTRO/XLIB/xlib7.html
 		opend = true;
+		return opend;
 	}
 
 	void api_close(){
