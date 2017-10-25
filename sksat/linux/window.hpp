@@ -15,7 +15,7 @@ namespace linux {
 
 using namespace x11;
 
-unsigned long col2xcol(Display *disp, sksat::color &col){
+unsigned long col2xcol(Display *disp, const sksat::color &col){
 	Colormap cm = DefaultColormap(disp, DefaultScreen(disp));
 	XColor xc;
 	xc.red  = 257 * col.r;
@@ -48,8 +48,10 @@ public:
 		XSetStandardProperties(disp, win, title.c_str(), "icon", None, &argv, 1, nullptr);
 		XSelectInput(disp, win, ExposureMask);
 		alloc_pixmap(xsize, ysize);
-		gc = XCreateGC(disp, win, 0, 0);
+		gc = XCreateGC(disp, pixmap, 0, 0);
+		XSetGraphicsExposures(disp, gc, false); // コピーをするたびにコピー先の窓にNoExopseイベントがイベントマスクの設定に関係無しに送られないようにする : http://www-cms.phys.s.u-tokyo.ac.jp/~naoki/CIPINTRO/XLIB/xlib7.html
 		opend = true;
+		return opend;
 	}
 
 	void api_close(){
@@ -69,7 +71,11 @@ public:
 	}
 
 	void api_set_size(size_t x, size_t y){
-		ASSERT(true, "not impl.");
+		XResizeWindow(disp, win, x, y);
+		resize_pixmap(x, y);
+		XFreeGC(disp, gc);
+		gc = XCreateGC(disp, pixmap, 0, 0);
+		XSetGraphicsExposures(disp, gc, false);
 	}
 
 	inline void api_move(size_t x, size_t y){
@@ -77,10 +83,11 @@ public:
 	}
 
 	inline void api_flush(){
+		XCopyArea(disp, pixmap, win, gc, 0, 0, xsize, ysize, 0, 0);
 		XFlush(disp);
 	}
 
-	inline void api_draw_point(sksat::color &col, size_t x, size_t y){
+	inline void api_draw_point(const sksat::color &col, size_t x, size_t y){
 		GC gc = XCreateGC(disp, pixmap, 0, 0);
 		XSetForeground(disp, gc, col2xcol(disp, col));
 		XDrawPoint(disp, pixmap, gc, x, y);
@@ -88,16 +95,20 @@ public:
 	}
 
 	inline bool api_step_loop(){
-		XNextEvent(disp, &event);
-		switch(event.type){
-		case Expose:
-			XCopyArea(disp, pixmap, win, gc, 0, 0, xsize, ysize, 0, 0);
-			break;
-		default:
-		//	throw "not implemented event: sksat::linux:x11::window::api_step_loop()";
-		//	ASSERT(true, event.type);
-			break;
+		if(XPending(disp) > 0){
+			XNextEvent(disp, &event);
+			switch(event.type){
+			case Expose:
+				XCopyArea(disp, pixmap, win, gc, 0, 0, xsize, ysize, 0, 0);
+				break;
+			default:
+				throw "not implemented event: sksat::linux:x11::window::api_step_loop()";
+			//	ASSERT(true, event.type);
+				break;
+			}
+			return true;
 		}
+		// idle
 		return true;
 	}
 private:
@@ -105,6 +116,15 @@ private:
 			if(pixmap_allocated) XFreePixmap(disp, pixmap);
 			pixmap = XCreatePixmap(disp, win, x, y, DefaultDepth(disp, 0));
 			pixmap_allocated = true;
+	}
+
+	void resize_pixmap(size_t x, size_t y){
+		x11:Pixmap old = pixmap;
+		pixmap_allocated = false;
+		alloc_pixmap(x,y);
+		clear();
+		XCopyArea(disp, old, pixmap, gc, 0, 0, x, y, 0, 0);
+		XFreePixmap(disp, old);
 	}
 
 	bool pixmap_allocated;
