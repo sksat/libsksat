@@ -11,18 +11,18 @@ class window_base {
 public:
 	window_base() : opend(false), xsize(default_xsize), ysize(default_ysize), xpos(default_xpos), ypos(default_ypos) {}
 	window_base(size_t x, size_t y) : opend(false), xsize(x), ysize(y), xpos(default_xpos), ypos(default_ypos) {}
-	window_base(sksat::string &t, size_t x, size_t y) : opend(false), title(t), xsize(x), ysize(y), xpos(default_xpos), ypos(default_ypos) {}
+	window_base(const sksat::string &t, size_t x, size_t y) : opend(false), title(t), xsize(x), ysize(y), xpos(default_xpos), ypos(default_ypos) {}
 
-	void open(){ opend = api_open(); }
+	void open(){ opend = api_open(); if(opend) clear(); }
 	void open(size_t x, size_t y){ open(); set_size(x,y); }
-	void open(sksat::string &t){ set_title(t); open(); }
-	void open(sksat::string &t, size_t x, size_t y){ set_title(t); open(x,y); }
+	void open(const sksat::string &t){ set_title(t); open(); }
+	void open(const sksat::string &t, size_t x, size_t y){ set_title(t); open(x,y); }
 
 	void close(){ if(opend) api_close(); opend=false; }
 
 	void show(){ if(opend) api_show(); }
 
-	void set_title(sksat::string &t){ title = t; set_title(t.c_str()); }
+	void set_title(const sksat::string &t){ title = t; set_title(t.c_str()); }
 	void set_title(const char *t){ title = t; api_set_title(t);  }
 	sksat::string get_title() const { return title; }
 
@@ -45,8 +45,8 @@ public:
 	operator bool () const { return opend; }
 
 	// 描画関数
-	inline void draw_point(sksat::color &col, size_t x, size_t y){ api_draw_point(col, x, y); }
-	virtual void draw_line(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1){
+	inline void draw_point(const sksat::color &col, size_t x, size_t y){ api_draw_point(col, x, y); }
+	virtual void draw_line(const sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1){
 		int x, y, len, dx, dy;
 		dx = x1-x0; dy = y1-y0;
 		x = x0<<10; y = y0<<10;
@@ -72,14 +72,36 @@ public:
 			x+=dx; y+=dy;
 		}
 	}
-//	void draw_rect(sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
+	virtual void draw_rect(const sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1, bool fill){
+		if(fill){
+			fill_rect(col, x0, y0, x1, y1);
+		}else{
+			draw_line(col, x0, y0, x1, y0);
+			draw_line(col, x1, y0, x1, y1);
+			draw_line(col, x1, y1, x0, y1);
+			draw_line(col, x0, y1, x0, y0);
+		}
+	}
+	virtual void fill_rect(const sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1){
+		if(x0 > x1){
+			size_t tmp = x1; x1 = x0; x0 = tmp; // swapとかでやるとよさそう
+		}
+		if(y0 > y1){
+			size_t tmp = y1; y1 = y0; y0 = tmp;
+		}
+		for(size_t x=x0;x<=x1;x++){
+			for(size_t y=y0;y<=y1;y++)
+				draw_point(col, x, y);
+		}
+	}
 
-	// set_color()でセットした色
-//	void draw_point(size_t x, size_t y);
-//	void draw_line(size_t x0, size_t y0, size_t x1, size_t y1);
-//	void draw_rect(size_t x0, size_t y0, size_t x1, size_t y1, bool fill);
+	// colの色で描画
+	void draw_point(size_t x, size_t y){ draw_point(col, x, y); }
+	void draw_line(size_t x0, size_t y0, size_t x1, size_t y1){ draw_line(col, x0, y0, x1, y1);}
+	void draw_rect(size_t x0, size_t y0, size_t x1, size_t y1, bool fill){ draw_rect(col, x0, y0, x1, y1, fill); }
 
-//	void fill_rect(size_t x0, size_t y0, size_t x1, size_t y1){ draw_rect(x0,y0,x1,y1,true); }
+	void clear(const sksat::color &col){ fill_rect(col, 0, 0, xsize, ysize); }
+	void clear(){ clear(col_back); }
 
 	inline void flush(){ if(opend) api_flush(); }
 
@@ -96,10 +118,13 @@ protected: // 環境依存部(純粋仮想関数)
 	virtual void api_move(size_t x, size_t y) = 0;
 
 	// 描画
-	virtual void api_draw_point(sksat::color &col, size_t x, size_t y) = 0;
+	virtual void api_draw_point(const sksat::color &col, size_t x, size_t y) = 0;
 
 	virtual bool api_step_loop() = 0;
 public:
+	sksat::color col;
+	sksat::color col_back;
+
 	static size_t default_xsize, default_ysize;
 	static size_t default_xpos, default_ypos;
 protected:
