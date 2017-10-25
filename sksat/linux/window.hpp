@@ -94,6 +94,13 @@ public:
 		XFreeGC(disp, gc);
 	}
 
+	inline void fill_rect(const sksat::color &col, size_t x0, size_t y0, size_t x1, size_t y1){
+		GC gc = XCreateGC(disp, pixmap, 0, 0);
+		XSetForeground(disp, gc, col2xcol(disp, col));
+		XFillRectangle(disp, pixmap, gc, x0, y0, x1-x0, y1-y0);
+		XFreeGC(disp, gc);
+	}
+
 	inline bool api_step_loop(){
 		if(XPending(disp) > 0){
 			XNextEvent(disp, &event);
