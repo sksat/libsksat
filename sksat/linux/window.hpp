@@ -15,7 +15,7 @@ namespace linux {
 
 using namespace x11;
 
-unsigned long col2xcol(Display *disp, sksat::color &col){
+unsigned long col2xcol(Display *disp, const sksat::color &col){
 	Colormap cm = DefaultColormap(disp, DefaultScreen(disp));
 	XColor xc;
 	xc.red  = 257 * col.r;
@@ -87,7 +87,7 @@ public:
 		XFlush(disp);
 	}
 
-	inline void api_draw_point(sksat::color &col, size_t x, size_t y){
+	inline void api_draw_point(const sksat::color &col, size_t x, size_t y){
 		GC gc = XCreateGC(disp, pixmap, 0, 0);
 		XSetForeground(disp, gc, col2xcol(disp, col));
 		XDrawPoint(disp, pixmap, gc, x, y);
