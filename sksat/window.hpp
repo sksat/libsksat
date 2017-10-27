@@ -13,7 +13,7 @@ public:
 	window_base(size_t x, size_t y) : opend(false), xsize(x), ysize(y), xpos(default_xpos), ypos(default_ypos) {}
 	window_base(const sksat::string &t, size_t x, size_t y) : opend(false), title(t), xsize(x), ysize(y), xpos(default_xpos), ypos(default_ypos) {}
 
-	void open(){ opend = api_open(); if(opend) clear(); }
+	void open(){ opend = api_open(); }
 	void open(size_t x, size_t y){ open(); set_size(x,y); }
 	void open(const sksat::string &t){ set_title(t); open(); }
 	void open(const sksat::string &t, size_t x, size_t y){ set_title(t); open(x,y); }

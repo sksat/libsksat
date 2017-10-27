@@ -5,7 +5,7 @@ CXXFLAGS = -g -O0 -std=c++11 -I../
 SRC = window.cc
 
 default:
-	$(CXX) $(CXXFLAGS) $(SRC) -lX11
+	$(CXX) $(CXXFLAGS) $(SRC) -mwindows
 
 clean:
 	rm -fr a.*
