@@ -8,7 +8,21 @@ namespace sksat {
 
 class shell {
 public:
-	shell() : com_enable(false), default_func(nullptr) {}
+	shell() : com_enable(false), in(stdin), out(stdout), default_func(nullptr) {}
+	shell(std::FILE *in, std::FILE *out) : com_enable(false), default_func(nullptr) { set_file(in, out); }
+
+	void set_infile(std::FILE *in){
+		if(in != nullptr) this->in = in;
+		else throw;
+	}
+	void set_outfile(std::FILE *out){
+		if(out != nullptr) this->out = out;
+		else throw;
+	}
+	void set_file(std::FILE *in, std::FILE *out){
+		set_infile(in);
+		set_outfile(out);
+	}
 
 	void set_prompt(sksat::string prompt){ this->prompt=prompt; }
 	void set_comment(sksat::string com){ oneline_com = com; }
@@ -31,7 +45,7 @@ public:
 		buf.reserve(1000);
 		for(;;){
 			out_str(prompt);
-			in_str();
+			if(!in_str()) break;
 			if(com_flg && !oneline_com.empty()) remove_oneline_com(buf);
 			str += buf;
 
@@ -47,23 +61,23 @@ public:
 		}
 	}
 protected:
-	void in_str(){
+	bool in_str(){
 		char c;
 		buf.clear();
 		for(;;){
-			c = fgetc(stdin); // TODO: stdin以外のファイルでも出来るようにする
+			c = fgetc(in);
 			if(c == '\n') break;
-			if(c == EOF) break;
+			if(c == EOF) return false;
 			buf.push_back(c);
 		}
+		return true;
 	}
 
-	// TODO: 標準出力以外にも出力出来るようにする
 	void out_str(sksat::string &s){
-		printf("%s", s.c_str());
+		fprintf(out, "%s", s.c_str());
 	}
 	void out_str(const char *s){
-		printf("%s", s);
+		fprintf(out, "%s", s);
 	}
 
 	void remove_oneline_com(sksat::string &s){
@@ -84,6 +98,7 @@ protected:
 	}
 
 	bool com_enable;
+	std::FILE *in, *out;
 	sksat::string prompt;
 	sksat::string oneline_com;
 	sksat::string com_start, com_end;
