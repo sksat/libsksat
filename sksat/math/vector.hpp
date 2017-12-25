@@ -38,7 +38,7 @@ public:
 		z -= v.get_z();
 		return *this;
 	}
-protected:
+
 	T x, y, z;
 };
 
