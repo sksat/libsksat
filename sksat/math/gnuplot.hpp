@@ -1,3 +1,6 @@
+#ifndef SKSAT_MATH_GNUPLOT_HPP_
+#define SKSAT_MATH_GNUPLOT_HPP_
+
 #include <sksat/common.hpp>
 
 namespace sksat {
@@ -37,3 +40,4 @@ private:
 
 }
 }
+#endif

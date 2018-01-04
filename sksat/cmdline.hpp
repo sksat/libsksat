@@ -207,5 +207,4 @@ int optparse::setarg<sksat::string>(sksat::string &var, sksat::string arg){
 }
 
 }
-
 #endif
