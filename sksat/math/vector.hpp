@@ -1,3 +1,6 @@
+#ifndef SKSAT_MATH_VECTOR_HPP_
+#define SKSAT_MATH_VECTOR_HPP_
+
 namespace sksat {
 namespace math {
 
@@ -89,3 +92,4 @@ inline const vector<T> operator*(const vector<T> v, const T& a){
 
 }
 }
+#endif
