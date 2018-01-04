@@ -1,3 +1,6 @@
+#ifndef SKSAT_CMDLINE_HPP_
+#define SKSAT_CMDLINE_HPP_
+
 #include <sksat/common.hpp>
 
 namespace sksat {
@@ -204,3 +207,4 @@ int optparse::setarg<sksat::string>(sksat::string &var, sksat::string arg){
 }
 
 }
+#endif
