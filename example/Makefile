@@ -2,13 +2,13 @@ CXX:= g++
 
 CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = shell.cc
+SRC = file.cc
 
 default:
-	$(CXX) $(CXXFLAGS) $(SRC)
+	$(CXX) $(CXXFLAGS) $(SRC) -o a.out
 
 clean:
-	rm -fr a.*
+	rm -f a.*
 
 vector:
 	$(eval SRC=vector-test.cc)
