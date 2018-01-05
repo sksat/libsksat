@@ -2,10 +2,10 @@ CXX:= g++
 
 CXXFLAGS = -g -O0 -std=c++11 -I../
 
-SRC = window.cc
+SRC = shell.cc
 
 default:
-	$(CXX) $(CXXFLAGS) $(SRC) -lX11
+	$(CXX) $(CXXFLAGS) $(SRC)
 
 clean:
 	rm -fr a.*
