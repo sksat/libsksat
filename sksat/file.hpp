@@ -2,132 +2,159 @@
 #define SKSAT_FILE_HPP_
 
 #include <sksat/common.hpp>
-#include <stdio.h>
 #include <sys/stat.h>
 
 namespace sksat {
 
 class file {
 public:
-	enum mode {
-		read_binary=0, rb=0,
-		write_binary=1, wb=1,
-		read_text=2, r=2,
-		write_text=3, w=3,
+	file() : fp(nullptr), size(0x00) { init(); }
+	file(const std::string &name) : fp(nullptr), size(0x00), name(name) { init(); }
+	~file(){ close(); }
+
+	enum class mode : uint8_t {
+		r  = 0b0000,
+		w  = 0b0001,
+		a  = 0b0010,
+		b  = 0b0100,
+		rw = r | w,
+		rb = r | b,
+		wb = w | b,
+		ab = a | b,
+		ar = a | r,
+		rwb= rw| b,
+		arb= ar| b
 	};
-
-	file() : data(nullptr) { init(); } // initでdelete食らわないようにしっかりnullptr
-	~file(){
-		close();
+protected:
+	virtual void init(){
+		flg_opend	= false;
+		flg_new		= true;
+		// デフォルトでは"r+"
+		m_mode		= mode::rw;
 	}
 
-	void init(){
-		fmode = mode::r;
-		opend = false;
-		flg_new = false;
-		name = "";
-		fp = nullptr;
-		if(fp != nullptr)
-			fclose(fp);
-		size = 0;
-		if(data != nullptr)
-			delete data;
-		data = nullptr;
-	}
+	std::string name;
+	std::FILE *fp;
+	size_t size;
+	bool flg_opend, flg_new;
+	mode m_mode;
+public:
+	bool exist() const { return exist(name); }
 
-	static bool exist(const char *fname){
-		struct stat st;
-		if(stat(fname, &st) == 0)
-			return true;
+	bool open(const std::string &name, mode mode_){
+		if(flg_opend)
+			return false;
+
+		this->name	= name;
+		this->m_mode	= mode_;
+
+		if(exist())
+			flg_new = false;
+
+		char fm[3] = {'\0'};
+		auto m = static_cast<uint8_t>(mode_); // TODO: enum classのoperator|,operator&
+		if(m & static_cast<uint8_t>(mode::w)){
+			fm[0] = 'w';
+			if(m & static_cast<uint8_t>(mode::r))
+				fm[1] = '+';
+		}else if(m & static_cast<uint8_t>(mode::a)){
+			fm[0] = 'a';
+			if(m & static_cast<uint8_t>(mode::r))
+				fm[1] = '+';
+		}else if(m & static_cast<uint8_t>(mode::r)){
+			fm[0] = 'r';
+		}else{
+			throw "error";
+		}
+
+		if(m & static_cast<uint8_t>(mode::b)){
+			if(fm[1] == '\0')
+				fm[1] = 'b';
+			else
+				fm[2] = 'b';
+		}
+
+		fp = std::fopen(name.c_str(), fm);
+		flg_opend = true;
+		if(fp == nullptr)
+			flg_opend = false;
+		return flg_opend;
+	}
+	bool open(const std::string &name){ open(name, this->m_mode); }
+	bool open(mode mode_){ open(this->name, mode_); }
+	bool open(){ open(this->name, this->m_mode); }
+
+	bool try_open(mode try_mode){
+		if(static_cast<uint8_t>(m_mode) & static_cast<uint8_t>(try_mode))
+			return open();
+		// TODO: エラー処理
 		return false;
 	}
 
-	bool exist() const { return sksat::file::exist(name.c_str()); }
-
-	bool open(){
-		if(!exist())
-			flg_new = true;
-		char fm[3] = {'\0'};
-		switch(fmode){
-		case mode::rb:
-			fm[0] = 'r';
-			fm[1] = 'b';
-			break;
-		case mode::wb:
-			fm[0] = 'w';
-			fm[1] = 'b';
-			break;
-		case mode::r:
-			fm[0] = 'r';
-			break;
-		case mode::w:
-			fm[0] = 'w';
-			break;
-		default:
-			throw "error!";
-		}
-		fp = fopen(name.c_str(), fm);
-		if(fp == nullptr)
-			return false;
-		opend = true;
-		return true;
-	}
-
-	bool open(const char *fname){ set_name(fname); open(); }
-	bool open(sksat::string &fname){ set_name(fname); open(); }
-
 	void close(){
-		if(!opend) return;
-		if(fp == nullptr) return;
-		int ret = fclose(fp);
-//		if(ret == EOF) // error
-		opend = false;
-	}
-
-	void set_name(const char *fname){ sksat::string s=fname; set_name(s); }
-	void set_name(sksat::string &fname){
-		if(opend)
-			throw "opend";
-		this->name = fname;
-	}
-
-	sksat::string get_name() const { return name; }
-
-	virtual void set_mode(sksat::file::mode m){ if(!opend) fmode = m; }
-	sksat::file::mode get_mode(){ return fmode; }
-protected:
-	mode fmode;
-	bool opend;
-	bool flg_new;
-	sksat::string name;
-	FILE *fp;
-	size_t size;
-	char *data;
-};
-
-class text_file : public file {
-public:
-	void set_mode(const sksat::file::mode m){
-		if((m != file::r) && (m != file::w)){
-			throw "cannot set binary mode!";
+		if(!flg_opend) return;
+		auto ret = fclose(fp);
+		flg_opend = false;
+		if(ret == EOF){
+			//TODO: 正常に終了しなかった場合
 		}
-		file::set_mode(m);
+	}
+
+	template<typename T>
+	T read(){
+		std::stringstream ss;
+		ss << read<std::string>();
+		T v;
+		ss >> v;
+		return v;
+	}
+
+	template<typename T>
+	void write(const T &v){
+		std::stringstream ss;
+		ss << v;
+		write<std::string>(ss.str());
+	}
+
+	static bool exist(const std::string &fname){
+		struct stat st;
+		if(stat(fname.c_str(), &st) == 0)
+			return true;
+		return false;
 	}
 };
 
-class binary_file : public file {
-public:
-	void set_mode(const file::mode m){
-		if((m != file::rb) && (m != file::wb)){
-			throw "cannot set text mode!";
-		}
-		file::set_mode(m);
+template<typename T>
+file& operator<<(file &f, const T &v){
+	f.write(v);
+	return f;
+}
+
+template<>
+std::string file::read<std::string>(){
+	if(!flg_opend){
+		if(!try_open(mode::r))
+			return {};
 	}
-};
 
-using txtfile = text_file;
-using binfile = binary_file;
+	std::string str;
+	for(;;){
+		char c = std::fgetc(fp);
+		if(c == EOF || c == '\n')
+			return str;
+		str.push_back(c);
+	}
+}
 
-} // namespace sksat
+template<>
+void file::write<std::string>(const std::string &str){
+	if(!flg_opend){
+		if(!try_open(mode::w) && !try_open(mode::a))
+			return;
+	}
+	std::fputs(str.c_str(), fp);
+}
+
+}
 
 #endif
