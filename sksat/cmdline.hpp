@@ -170,6 +170,8 @@ public:
 			printf("  ");
 			if(o.s_opt != '\0')
 				printf("-%c, ", o.s_opt);
+			else
+				printf("    ");
 			if(o.l_opt != "")
 				printf("--%s", o.l_opt.c_str());
 			for(auto k=0;k<(len-o.l_opt.size());k++) putchar(' ');
