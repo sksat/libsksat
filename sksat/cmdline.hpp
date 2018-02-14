@@ -1,3 +1,6 @@
+#ifndef SKSAT_CMDLINE_HPP_
+#define SKSAT_CMDLINE_HPP_
+
 #include <sksat/common.hpp>
 
 namespace sksat {
@@ -157,14 +160,22 @@ public:
 
 	void print_help(){
 		printf("Options:\n");
-		for(int i=0;i<opts.size();i++){
+		auto len = 0;
+		for(auto i=0;i<opts.size();i++){
+			auto s = opts[i].l_opt.size();
+			if(s > len) len = s;
+		}
+		for(auto i=0;i<opts.size();i++){
 			auto o = opts[i];
 			printf("  ");
 			if(o.s_opt != '\0')
 				printf("-%c, ", o.s_opt);
+			else
+				printf("    ");
 			if(o.l_opt != "")
 				printf("--%s", o.l_opt.c_str());
-			printf("\t\t%s\n", o.desc.c_str());
+			for(auto k=0;k<(len-o.l_opt.size());k++) putchar(' ');
+			printf("  %s\n", o.desc.c_str());
 		}
 	}
 
@@ -204,3 +215,4 @@ int optparse::setarg<sksat::string>(sksat::string &var, sksat::string arg){
 }
 
 }
+#endif

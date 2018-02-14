@@ -9,9 +9,9 @@ int main(){
 	sksat::rgba rgba;
 	rgba.r = 0xff;
 
-	rgb = rgba;
-	rgba = rgb;
+	rgb = rgba.value;
+	rgba = rgb.value;
 
 	sksat::color col;
-	col = rgba;
+	col = rgba.value;
 }

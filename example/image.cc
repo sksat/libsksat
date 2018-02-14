@@ -16,7 +16,8 @@ void print(sksat::image<T> &img){
 
 int main(int argc, char **argv){
 try{
-	auto red = sksat::rgba(0xff,0x00,0x00,0x00);
+	sksat::rgba red = {0xff,0x00,0x00,0x00};
+	std::cout<<"r:"<<(uint32_t)red.r<<std::endl;
 	sksat::image<sksat::rgba> img;
 	img.init(10,10);
 	print(img);

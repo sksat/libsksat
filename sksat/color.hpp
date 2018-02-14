@@ -5,38 +5,25 @@
 
 namespace sksat {
 
-class rgb24 {
-public:
-	rgb24() : r(0x00), g(0x00), b(0x00) {}
-	rgb24(uint8_t r, uint8_t g, uint8_t b){ set(r,g,b); }
-
-	void set(uint8_t r, uint8_t g, uint8_t b){
-		this->r = r;
-		this->g = g;
-		this->b = b;
-	}
-
-	uint8_t r,g,b;
+union rgb24 {
+	rgb24() : value(0x00) {}
+	rgb24(const uint32_t &col) : value(col) {}
+	rgb24(const uint8_t &r, const uint8_t &g, const uint8_t &b) : r(r), g(g), b(b) {}
+	struct {
+		uint8_t r,g,b;
+	};
+	uint32_t value : 24;
 };
 
-class rgba32 : public rgb24 {
-public:
-	rgba32(): a(0x00) {}
-	rgba32(uint8_t r, uint8_t g, uint8_t b, uint8_t a){ set(r,g,b,a); }
-
-	void set(uint8_t r, uint8_t g, uint8_t b, uint8_t a){ rgb24::set(r,g,b); this->a = a; }
-
-	rgba32& operator=(const rgb24 &rgb){
-		set(rgb.r, rgb.g, rgb.b, 0x00);
-		return *this;
-	}
-
-	rgba32& operator=(rgba32 &rgba){
-		set(rgba.r, rgba.g, rgba.b, rgba.a);
-		return *this;
-	}
-
-	uint8_t a;
+union rgba32 {
+	rgba32() : value(0x00) {}
+	rgba32(const uint32_t &col) : value(col) {}
+	rgba32(const uint8_t &r, const uint8_t &g, const uint8_t &b) : r(r), g(g), b(b), a(0x00) {}
+	rgba32(const uint8_t &r, const uint8_t &g, const uint8_t &b, const uint8_t &a) : r(r), g(g), b(b), a(a) {}
+	struct {
+		uint8_t r,g,b,a;
+	};
+	uint32_t value;
 };
 
 
